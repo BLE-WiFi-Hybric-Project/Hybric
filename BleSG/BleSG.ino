@@ -138,6 +138,7 @@ void loop() {
            if (retransmissionCount <= MAX_RETRANSMISSIONS) {
               // Retransmit the same chunk
               Serial.println("Retransmitting chunk...");
+              pCharacteristic->setValue(buffer, bytesRead);
               continue;
            } else {
               Serial.println("Max retransmissions reached. Aborting.");
