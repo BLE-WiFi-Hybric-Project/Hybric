@@ -17,8 +17,8 @@ bool sendingFile = false;
 BLE2902 *pBLE2902;
 BLE2902 *pBLE2902_2;
 
-unsigned long startMillis_1;
-unsigned long endMillis;          
+bool waitingForAck = false;
+size_t lastBytesSent = 0;
 File file;
 
 // Global variables for ACK handling and retransmission
@@ -48,7 +48,7 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
 bool waitForAck() {
     // Wait for acknowledgment (timeout after 5 seconds)
     unsigned long startTime = millis();
-    while (millis() - startTime < 5000) {
+    while (waitingForAck && millis() - startTime < 5000) {
         if (lastAckData != NULL) {
             return true;
         }
@@ -120,17 +120,16 @@ void loop() {
         return;
       }
 
-      startMillis_1 = millis();
       // Read and send the file contents
       while (file.available()) {
         uint8_t buffer[251]; // Read in chunks of 251 bytes
-        size_t bytesRead = file.read(buffer, 20);
-
-        // Add error-checking mechanism here (CRC, checksum, etc.)
-
-        pCharacteristic->setValue(buffer, bytesRead);
-        pCharacteristic->notify();
-
+        if(!waitingForAck)
+          size_t bytesRead = file.read(buffer, 20);
+          lastBytesSent = bytesRead;
+          pCharacteristic->setValue(buffer, bytesRead);
+          pCharacteristic->notify();
+          waitingForAck = true;
+        }
         // Wait for acknowledgment
         if (!waitForAck()) {
            // Handle retransmission
@@ -150,6 +149,7 @@ void loop() {
         if (lastAckData == "1") {
            // ACK indicates that the client is ready for the next chunk
            Serial.println("Received ACK. Continuing to the next chunk.");
+           waitingForAck = false;
         } else {
            // ACK indicates an error or other condition, handle accordingly
            Serial.println("Received non-1 ACK. Aborting.");
@@ -162,9 +162,6 @@ void loop() {
       // Close the file
       file.close();
       sendingFile = false;
-
-      Serial.print("Total time sent: ");
-      Serial.println(endMillis - startMillis_1);
     }
   }
 
