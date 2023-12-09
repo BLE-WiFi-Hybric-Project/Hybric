@@ -29,11 +29,7 @@ class MyClientCallback : public BLEClientCallbacks {
 };
 
 void sendAckNow() {
-  // uint8_t ackData[] = {static_cast<uint8_t>(ackNum)};
-  // pRemoteChar->writeValue(ackData, sizeof(ackData));
-  int value = 1;
-  String txValue = String(value);
-  Serial.println(txValue);
+  String txValue = "1";
   pRemoteChar_2->writeValue(txValue.c_str(), txValue.length());
 }
 
@@ -161,7 +157,6 @@ void loop() {
 
   if (connected) {
     // Do something when connected
-    // Serial.println("Connected and waiting for notifications...");
     if(sendAck){
       sendAckNow();
       sendAck = false;
