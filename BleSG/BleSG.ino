@@ -18,6 +18,8 @@ BLE2902 *pBLE2902;
 BLE2902 *pBLE2902_2;
 
 File file;
+size_t lastBytesSent = 0;
+bool waitingForAck = false;
 
 // Global variables for ACK handling and retransmission
 volatile bool ackReceived = false;
@@ -40,6 +42,7 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic* pCharacteristic) {
         std::string value = pCharacteristic_2->getValue();
         lastAckData = String(value.c_str());
+        waitingForAck = false;
     }
 };
 
@@ -48,6 +51,7 @@ bool waitForAck() {
     unsigned long startTime = millis();
     while (millis() - startTime < 5000) {
         if (lastAckData != NULL) {
+            waitingForAck = false;
             return true;
         }
         delay(10);  // Adjust the delay as needed
@@ -120,21 +124,25 @@ void loop() {
       Serial.println("Start");
       // Read and send the file contents
       while (file.available()) {
-        uint8_t buffer[20]; // Read in chunks of 251 bytes
-        size_t bytesRead = file.read(buffer, 20);
-
-        // Add error-checking mechanism here (CRC, checksum, etc.)
-
-        pCharacteristic->setValue(buffer, bytesRead);
-        pCharacteristic->notify();
+        if(!waitingForAck) {
+          uint8_t buffer[20]; // Read in chunks of 251 bytes
+          size_t bytesRead = file.read(buffer, 20);
+          lastBytesSent = bytesRead;
+  
+          pCharacteristic->setValue(buffer, bytesRead);
+          pCharacteristic->notify();
+          waitingForAck = true;
+        }
 
         // Wait for acknowledgment
-        if (!waitForAck()) {
+        while (!waitForAck()) {
            // Handle retransmission
            retransmissionCount++;
            if (retransmissionCount <= MAX_RETRANSMISSIONS) {
               // Retransmit the same chunk
               Serial.println("Retransmitting chunk...");
+              pCharacteristic->setValue(buffer, lastBytesSent);
+              pCharacteristic->notify();
               continue;
            } else {
               Serial.println("Max retransmissions reached. Aborting.");
@@ -143,10 +151,7 @@ void loop() {
         }
 
         // Check the received ACK data before continuing
-        if (lastAckData == "1") {
-           // ACK indicates that the client is ready for the next chunk
-           // Serial.println("1");
-        } else {
+        if (lastAckData != "1") {
            // ACK indicates an error or other condition, handle accordingly
            Serial.println("Received non-1 ACK. Aborting.");
            break;
