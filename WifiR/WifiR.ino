@@ -1,13 +1,13 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WiFiServer.h>
-#include <LittleFS.h>  // Include LittleFS library
+#include <SPIFFS.h>  // Include SPIFFS library for ESP32
 
-const char *ssid = "FREE-WiFI";
+const char *ssid = "FREE-WIFI";
 const char *password = "20012005";
 const char *receivedFilename = "/received_file.txt"; // Replace with your desired received file name and extension
 
-WiFiServer server(80);
+WiFiServer ESPserver(8888);
 
 void setup() {
   Serial.begin(115200);
@@ -20,18 +20,25 @@ void setup() {
   }
 
   Serial.println("Connected to WiFi");
+  Serial.println(WiFi.localIP());
 
   // Start the server
-  server.begin();
+  ESPserver.begin();
 }
 
 void loop() {
-  WiFiClient client = server.available();
+  WiFiClient client = ESPserver.available();
   if (client) {
     Serial.println("Client connected");
 
+    // Initialize SPIFFS
+    if (!SPIFFS.begin()) {
+      Serial.println("Failed to mount SPIFFS");
+      return;
+    }
+
     // Create a new file to store received data
-    File file = LittleFS.open(receivedFilename, "w");
+    File file = SPIFFS.open(receivedFilename, "w");
     if (!file) {
       Serial.println("Failed to create file");
       return;
@@ -39,13 +46,11 @@ void loop() {
 
     // Read data from the client and write it to the file
     uint8_t buffer[1460]; // Read in chunks of 1460 bytes
-    size_t bytesRead;
-
     while (client.available() && (bytesRead = client.readBytes(buffer, sizeof(buffer)))) 
     {
-      size_t bytesRead = client.readBytes(buffer, 1460);
       file.write(buffer, bytesRead);
       client.write('A'); // Send ACK
+      Serial.println("Send ACK");
     }
 
     // Close the file and disconnect
