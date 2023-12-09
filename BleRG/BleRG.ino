@@ -45,17 +45,14 @@ static void notifyCallback(BLERemoteCharacteristic* pBLERemoteCharacteristic,
   if(pBLERemoteCharacteristic->getUUID().toString() == charUUID.toString()) {
 
     // convert received bytes to integer
-    // uint32_t counter = pData[0];
-    // for(int i = 1; i<length; i++) {
-    //   counter = counter | (pData[i] << i*8);
-    // }
+    uint32_t counter = pData[0];
+    for(int i = 1; i<length; i++) {
+      counter = counter | (pData[i] << i*8);
+    }
 
     // print to Serial
-    // Serial.print("Characteristic 1 (Notify) from server: ");
-    // Serial.println(counter );
-
-    Serial.print("Received bytes: ");
-    Serial.println(length);
+    Serial.print("Characteristic 1 (Notify) from server: ");
+    Serial.println(counter );
     
     sendAck = true;  
   }
