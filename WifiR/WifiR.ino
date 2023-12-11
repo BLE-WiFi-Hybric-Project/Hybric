@@ -1,62 +1,72 @@
+#include <Arduino.h>
 #include <WiFi.h>
-#include <WiFiClient.h>
-#include <WiFiServer.h>
-#include <SPIFFS.h>  // Include SPIFFS library for ESP32
+#include <HTTPClient.h>
+#include <SPIFFS.h>
 
 const char *ssid = "FREE-WIFI";
 const char *password = "20012005";
-const char *receivedFilename = "/received_file.txt"; // Replace with your desired received file name and extension
+const char *serverIP = "192.168.1.12";
 
-WiFiServer ESPserver(8888);
+void setup()
+{
+    Serial.begin(115200);
 
-void setup() {
-  Serial.begin(115200);
+    // Connect to Wi-Fi
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(1000);
+        Serial.print("...");
+    }
+    Serial.println("\nConnected to WiFi");
 
-  // Connect to Wi-Fi
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi...");
-  }
-
-  Serial.println("Connected to WiFi");
-  Serial.println(WiFi.localIP());
-
-  // Start the server
-  ESPserver.begin();
+    if (!SPIFFS.begin())
+    {
+        Serial.println("Failed to mount SPIFFS");
+        return;
+    }
 }
 
-void loop() {
-  WiFiClient client = ESPserver.available();
-  if (client) {
-    Serial.println("Client connected");
+void loop()
+{
+    // Wait for a few seconds
+    delay(5000);
 
-    // Initialize SPIFFS
-    if (!SPIFFS.begin()) {
-      Serial.println("Failed to mount SPIFFS");
-      return;
-    }
+    // Send a GET request to the server to download the file
+    HTTPClient http;
+    String url = "http://" + String(serverIP) + "/download";
 
-    // Create a new file to store received data
-    File file = SPIFFS.open(receivedFilename, "w");
-    if (!file) {
-      Serial.println("Failed to create file");
-      return;
-    }
+    Serial.println("Sending GET request to: " + url);
 
-    // Read data from the client and write it to the file
-    uint8_t buffer[1460]; // Read in chunks of 1460 bytes
-    while (client.available() && (bytesRead = client.readBytes(buffer, sizeof(buffer)))) 
+    http.begin(url);
+    int httpCode = http.GET();
+
+    if (httpCode > 0)
     {
-      file.write(buffer, bytesRead);
-      client.write('A'); // Send ACK
-      Serial.println("Send ACK");
+        Serial.printf("[HTTP] GET... code: %d\n", httpCode);
+
+        if (httpCode == HTTP_CODE_OK)
+        {
+            // File received successfully
+            Serial.println("--------------------Start download--------------------");
+
+            // Save received data to a file on the client
+            File file = SPIFFS.open("/recieved_example.txt", FILE_WRITE);
+            if (file)
+                http.writeToStream(&file);
+            else
+                Serial.println("Error opening file for writing");
+            Serial.println("--------------------Finish download--------------------");
+        }
+        else
+        {
+            Serial.printf("Failed to download file, error: %s\n", http.errorToString(httpCode).c_str());
+        }
+    }
+    else
+    {
+        Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
     }
 
-    // Close the file and disconnect
-    file.close();
-    client.stop();
-  }
-
-  delay(1000); // Wait 1 second before checking for a new client
+    http.end();
 }
