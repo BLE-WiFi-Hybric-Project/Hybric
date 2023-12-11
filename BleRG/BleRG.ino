@@ -16,9 +16,6 @@ static BLEAdvertisedDevice* myDevice;
 BLERemoteCharacteristic* pRemoteChar;
 BLERemoteCharacteristic* pRemoteChar_2;
 
-const int WINDOW_SIZE = 3;
-int expectedSeqNum = 0;
-
 class MyClientCallback : public BLEClientCallbacks {
   void onConnect(BLEClient* pclient) {}
 
