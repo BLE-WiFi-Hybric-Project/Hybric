@@ -12,6 +12,9 @@ bool deviceConnected = false;
 bool oldDeviceConnected = false;
 bool sendingFile = false;
 
+String openFile = "O";
+String closeFile = "C";
+
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define CHARACTERISTIC_UUID_2 "1c95d5e3-d8f7-413a-bf3d-7a2e5d7be87e"
@@ -23,6 +26,7 @@ size_t lastByteSend;
 
 // Global variables for ACK handling and retransmission
 bool ackReceived = false;
+bool sendFileACK = false;
 int retransmissionCount = 0;
 const int MAX_RETRANSMISSIONS = 3; // Set a maximum number of retransmissions
 String lastAckData;
@@ -131,6 +135,10 @@ void loop()
         Serial.println("Failed to open file");
         return;
       }
+
+      // Inform client to open to save
+      pCharacteristic_2->setValue(openFile.c_str());
+
       Serial.println("Start");
       uint8_t buffer[20];
       // Read and send the file contents
@@ -167,6 +175,9 @@ void loop()
         // Reset retransmission count upon successful acknowledgment
         retransmissionCount = 0;
       }
+
+      // Inform client to close file
+      pCharacteristic_2->setValue(closeFile.c_str());
 
       // Close the file
       file.close();
