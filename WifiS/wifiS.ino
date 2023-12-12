@@ -3,9 +3,10 @@
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 
-const char *ssid = "FREE-WIFI";
-const char *password = "20012005";
-String fileName = "/example.txt";
+const char *ssid = "ESP32";
+const char *password = "88888888";
+
+bool ACK = false;
 
 AsyncWebServer server(80);
 
@@ -13,15 +14,11 @@ void setup()
 {
   Serial.begin(115200);
 
-  // Connect to Wi-Fi
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(1000);
-    Serial.print("...");
-  }
-  Serial.println("\nConnected to WiFi");
-  Serial.print(WiFi.localIP());
+  // Start access point
+  WiFi.softAP(ssid, password);
+
+  // Print the IP address
+  Serial.println("Access Point IP address: " + WiFi.softAPIP().toString());
 
   // Initialize SPIFFS
   if (!SPIFFS.begin())
@@ -30,7 +27,13 @@ void setup()
     return;
   }
 
-  // Route to handle file download
+  server.on("/ack", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+    // Handle the GET request
+    ACK = true;
+    request->send(200, "text/plain", "200"); });
+
+  // Handle root URL
   server.on("/download", HTTP_GET, [](AsyncWebServerRequest *request)
             {
     String fileName = "/example.txt";
@@ -51,5 +54,9 @@ void setup()
 
 void loop()
 {
-  // Nothing to do here
+  if (ACK)
+  {
+    Serial.println("ACK received in loop");
+    ACK = false; // Reset ACK to false after processing
+  }
 }
