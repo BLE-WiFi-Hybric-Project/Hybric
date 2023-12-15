@@ -1,0 +1,16 @@
+{
+  "folders": [
+	{
+		"path": "../Cilent Reciever"
+	},
+	{
+		"name": "BLE Reciever",
+		"path": "../BLE Reciever"
+	},
+	{
+		"name": "Wifi Reciever",
+		"path": "."
+	}
+],
+  "settings": {}
+}

@@ -1,11 +1,6 @@
 #include "main.h"
 #include "BleAndWifi.h"
 
-// Some variables to keep track of the device connection
-static boolean doConnect = false;
-static boolean connected = false;
-static boolean doScan = false;
-
 // Define pointer for the BLE connection
 BLERemoteCharacteristic *pRemoteChar;
 BLERemoteCharacteristic *pRemoteChar_2;
@@ -144,7 +139,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
     }     // onResult
 };        // MyAdvertisedDeviceCallbacks
 
-void Ble_setup()
+void BLE_setup()
 {
     BLEDevice::init("BLE client");
     BLEScan *pBLEScan = BLEDevice::getScan();
@@ -198,8 +193,8 @@ void BLE_Reciever()
         // Switch to Wifi
         if (switchToWiFi)
         {
-            file.close();
-            switchToWiFi = false;
+            if (file != NULL)
+                file.close();
             return;
         }
     }
@@ -248,6 +243,8 @@ void Wifi_Reciever()
             int httpCode2 = http.GET();
             if (httpCode2 > 0)
                 Serial.println("Send ACK");
+
+            switchToWiFi = false;
         }
         else
             Serial.printf("Failed to download file, error: %s\n", http.errorToString(httpCode).c_str());

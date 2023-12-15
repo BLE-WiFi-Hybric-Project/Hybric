@@ -12,9 +12,9 @@ static BLEUUID charUUID("beb5483e-36e1-4688-b7f5-ea07361b26a8");
 static BLEUUID charUUID_2("1c95d5e3-d8f7-413a-bf3d-7a2e5d7be87e");
 
 // Some variables to keep track of the device connection
-static boolean doConnect;
-static boolean connected;
-static boolean doScan;
+static boolean doConnect = false;
+static boolean connected = false;
+static boolean doScan = false;
 
 // Define pointer for the BLE connection
 static BLEAdvertisedDevice *myDevice;

@@ -23,14 +23,21 @@ void setup()
 void loop()
 {
   file = root.openNextFile();
-  if (shouldSwitchToWifi(file))
-    BLE_Sending(file);
-  else
+  if (file.available())
   {
-    Wifi_setup(file);
-    while (!switchToWiFi) {
-        Wifi_Transmission();
+    Serial.println(file.name());
+    if (!shouldSwitchToWifi(file))
+    {
+      while (sendingFile)
+        BLE_Sending(file);
     }
-    BLE_setup();
+    else
+    {
+      informCilent(pCharacteristic_2, "3");
+      Wifi_setup(file);
+      while (switchToWiFi)
+        WifiSending();
+      BLE_setup();
+    }
   }
 }

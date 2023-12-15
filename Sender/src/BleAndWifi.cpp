@@ -16,7 +16,6 @@ size_t lastByteSend;
 const char *ssid = "ESP32";
 const char *password = "88888888";
 AsyncWebServer server(80);
-SemaphoreHandle_t ackSemaphore;
 
 // ACK
 bool ackReceived = false;
@@ -30,7 +29,6 @@ class MyServerCallbacks : public BLEServerCallbacks
     void onConnect(BLEServer *pServer)
     {
         deviceConnected = true;
-        sendingFile = true;
     };
 
     void onDisconnect(BLEServer *pServer)
@@ -44,8 +42,7 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks
 {
     void onWrite(BLECharacteristic *pCharacteristic)
     {
-        std::string value = pCharacteristic_2->getValue();
-        lastAckData = String(value.c_str());
+        lastAckData = String(pCharacteristic->getValue().c_str());
     }
 };
 
@@ -113,9 +110,9 @@ void BLE_Sending(File fileSending)
     {
         if (sendingFile)
         {
+            Serial.println("Start");
             // Inform client to open file to save
-            pCharacteristic_2->setValue(String("1").c_str());
-            pCharacteristic_2->notify();
+            informCilent(pCharacteristic_2, "1");
 
             uint8_t buffer[20];
             // Read and send the file contents
@@ -146,8 +143,7 @@ void BLE_Sending(File fileSending)
                     {
                         switchToWiFi = true;
                         // Inform client to switch to Wifi
-                        pCharacteristic_2->setValue(String("3").c_str());
-                        pCharacteristic_2->notify();
+                        informCilent(pCharacteristic_2, "3");
                         break;
                     }
                 }
@@ -156,12 +152,13 @@ void BLE_Sending(File fileSending)
             }
 
             // Inform client to close file
-            pCharacteristic_2->setValue(String("2").c_str());
-            pCharacteristic_2->notify();
+            informCilent(pCharacteristic_2, "2");
 
             // Close the file
             fileSending.close();
             sendingFile = false;
+
+            Serial.println("Finish");
         }
     }
 
@@ -174,6 +171,8 @@ void BLE_Sending(File fileSending)
 
     if (deviceConnected && !oldDeviceConnected)
         oldDeviceConnected = deviceConnected;
+
+    delay(1000);
 }
 
 void Wifi_setup(File fileSending)
@@ -192,14 +191,16 @@ void Wifi_setup(File fileSending)
     // Handle the GET request for ACK
     server.on("/ack", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-    xSemaphoreGive(ackSemaphore); // Release the semaphore
+    switchToWiFi = false;
+    Serial.println("ACK gotten");
     request->send(200, "text/plain", "200"); });
 
     // Handle root URL
     server.on("/download", HTTP_GET, [fileSending](AsyncWebServerRequest *request)
               {
+    String fileName = "/" + String(fileSending.name());
     if (fileSending) {
-      request->send(SPIFFS, fileSending.name(), "text/plain");
+      request->send(SPIFFS, fileName, "text/plain");
       file.close();
     } else {
       request->send(404, "text/plain", "File not found");
@@ -215,8 +216,8 @@ void Wifi_setup(File fileSending)
 void WifiSending()
 {
     // Wait for the semaphore to be given by the callback
-    if (xSemaphoreTake(ackSemaphore, portMAX_DELAY))
-        switchToWiFi = false;
+    if (!switchToWiFi)
+        Serial.println("ACK gotten v.2");
 }
 
 bool shouldSwitchToWifi(File fileSending)
@@ -224,13 +225,23 @@ bool shouldSwitchToWifi(File fileSending)
     if (switchToWiFi)
         return true;
 
-    int size = (fileSending.size() / 1024.0, 3);
+    int size = fileSending.size() / 1024;
+    Serial.println("File size: " + String(size));
 
-    if (size > 50)
+    if (size > 30)
     {
         switchToWiFi = true;
         return true;
     }
     else
+    {
+        sendingFile = true;
         return false;
+    }
+}
+
+void informCilent(BLECharacteristic *pInform, String info)
+{
+    pInform->setValue(info.c_str());
+    pInform->notify();
 }

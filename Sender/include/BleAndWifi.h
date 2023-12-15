@@ -28,7 +28,6 @@ extern size_t lastByteSend;
 extern const char *ssid;
 extern const char *password;
 extern AsyncWebServer server;
-extern SemaphoreHandle_t ackSemaphore;
 
 // ACK
 extern bool ackReceived;
@@ -43,5 +42,6 @@ void Wifi_setup(File fileSending);
 void WifiSending();
 
 bool shouldSwitchToWifi(File fileSending);
+void informCilent(BLECharacteristic *pInform, String info);
 
 #endif

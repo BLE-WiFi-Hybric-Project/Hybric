@@ -24,7 +24,8 @@ void loop()
   else
   {
     Wifi_setup();
-    Wifi_Reciever();
+    while (switchToWiFi)
+      Wifi_Reciever();
     BLE_setup();
   }
 
