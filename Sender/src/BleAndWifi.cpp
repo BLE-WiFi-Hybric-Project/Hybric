@@ -144,7 +144,8 @@ void BLE_Sending(File fileSending)
                         switchToWiFi = true;
                         // Inform client to switch to Wifi
                         informCilent(pCharacteristic_2, "3");
-                        break;
+                        failTranmission = true;
+                        return;
                     }
                 }
                 // Reset retransmission count upon successful acknowledgment
@@ -192,7 +193,7 @@ void Wifi_setup(File fileSending)
     server.on("/ack", HTTP_GET, [](AsyncWebServerRequest *request)
               {
     switchToWiFi = false;
-    Serial.println("ACK gotten");
+    failTranmission = false;
     request->send(200, "text/plain", "200"); });
 
     // Handle root URL
@@ -217,7 +218,7 @@ void WifiSending()
 {
     // Wait for the semaphore to be given by the callback
     if (!switchToWiFi)
-        Serial.println("ACK gotten v.2");
+        Serial.println("ACK gotten");
 }
 
 bool shouldSwitchToWifi(File fileSending)
