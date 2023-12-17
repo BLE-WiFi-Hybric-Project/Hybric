@@ -7,5 +7,6 @@
 extern File file;
 extern File root;
 extern bool switchToWiFi;
+extern bool failTranmission;
 
 #endif
