@@ -4,6 +4,7 @@
 File file;
 File root;
 bool switchToWiFi = false;
+bool failTranmission = false;
 
 void setup()
 {
@@ -22,7 +23,9 @@ void setup()
 
 void loop()
 {
-  file = root.openNextFile();
+  if (!failTranmission)
+    file = root.openNextFile();
+
   if (file.available())
   {
     Serial.println(file.name());
