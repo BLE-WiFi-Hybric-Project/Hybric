@@ -66,6 +66,8 @@ bool waitForAck()
 
 void BLE_setup()
 {
+    Serial.println("Start BLE");
+
     BLEDevice::init("ESP32");
     pServer = BLEDevice::createServer();
     pServer->setCallbacks(new MyServerCallbacks());
@@ -126,6 +128,7 @@ void BLE_Sending(File fileSending)
                     pCharacteristic->setValue(buffer, bytesRead);
                     pCharacteristic->notify();
                     ackReceived = true;
+                    delay(1);
                 }
 
                 // Wait for acknowledgment
@@ -143,6 +146,7 @@ void BLE_Sending(File fileSending)
                     {
                         switchToWiFi = true;
                         // Inform client to switch to Wifi
+                        Serial.println("Fail tranmission in BLE");
                         informCilent(pCharacteristic_2, "3");
                         failTranmission = true;
                         return;
@@ -179,12 +183,10 @@ void BLE_Sending(File fileSending)
 void Wifi_setup(File fileSending)
 {
     Serial.begin(115200);
+    Serial.println("Start Wifi");
 
     // Start access point
     WiFi.softAP(ssid, password);
-
-    // Create a binary semaphore
-    ackSemaphore = xSemaphoreCreateBinary();
 
     // Print the IP address
     Serial.println("Access Point IP address: " + WiFi.softAPIP().toString());
@@ -194,6 +196,7 @@ void Wifi_setup(File fileSending)
               {
     switchToWiFi = false;
     failTranmission = false;
+    Serial.println("Finish download");
     request->send(200, "text/plain", "200"); });
 
     // Handle root URL
@@ -223,6 +226,7 @@ void WifiSending()
 
 bool shouldSwitchToWifi(File fileSending)
 {
+    // Used for fail Retranmission in BLE
     if (switchToWiFi)
         return true;
 

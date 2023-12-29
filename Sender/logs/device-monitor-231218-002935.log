@@ -1,0 +1,16 @@
+00:29:35.579 > ets Jul 29 2019 12:21:46
+00:29:35.589 > 
+00:29:35.589 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+00:29:35.592 > configsip: 0, SPIWP:0xee
+00:29:35.592 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+00:29:35.592 > mode:DIO, clock div:2
+00:29:35.606 > load:0x3fff0030,len:1184
+00:29:35.608 > load:0x40078000,len:13232
+00:29:35.610 > load:0x40080400,len:3028
+00:29:35.610 > entry 0x400805e4
+00:29:36.556 > Start BLE
+00:29:37.303 > Waiting a client connection to notify...
+00:29:37.305 > SampleTextFile_50kb.txt
+00:29:37.305 > File size: 49
+00:29:37.327 > Start Wifi
+00:29:37.367 > Access Point IP address: 192.168.4.1

@@ -1,0 +1,60 @@
+00:35:21.427 > ets Jul 29 2019 12:21:46
+00:35:21.428 > 
+00:35:21.428 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+00:35:21.433 > configsip: 0, SPIWP:0xee
+00:35:21.436 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+00:35:21.442 > mode:DIO, clock div:2
+00:35:21.444 > load:0x3fff0030,len:1184
+00:35:21.447 > load:0x40078000,len:13232
+00:35:21.449 > load:0x40080400,len:3028
+00:35:21.449 > entry 0x400805e4
+00:35:22.402 > Start BLE
+00:35:23.135 > Waiting a client connection to notify...
+00:35:23.140 > SampleTextFileA_5kb.txt
+00:35:23.140 > File size: 5
+00:35:25.140 > Start
+00:37:01.986 > ets Jul 29 2019 12:21:46
+00:37:02.002 > 
+00:37:02.002 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+00:37:02.002 > configsip: 0, SPIWP:0xee
+00:37:02.002 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+00:37:02.014 > mode:DIO, clock div:2
+00:37:02.017 > load:0x3fff0030,len:1184
+00:37:02.020 > load:0x40078000,len:13232
+00:37:02.023 > load:0x40080400,len:3028
+00:37:02.023 > entry 0x400805e4
+00:37:02.976 > Start BLE
+00:37:03.710 > Waiting a client connection to notify...
+00:37:03.710 > SampleTextFileA_5kb.txt
+00:37:03.710 > File size: 5
+00:37:33.720 > Start
+00:37:34.119 > Finish
+00:37:35.126 > SampleTextFileB_50kb.txt
+00:37:35.126 > File size: 49
+00:37:35.142 > Start Wifi
+00:37:35.187 > Access Point IP address: 192.168.4.1
+00:38:22.154 > ets Jul 29 2019 12:21:46
+00:38:22.154 > 
+00:38:22.154 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+00:38:22.160 > configsip: 0, SPIWP:0xee
+00:38:22.160 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+00:38:22.168 > mode:DIO, clock div:2
+00:38:22.171 > load:0x3fff0030,len:1184
+00:38:22.174 > load:0x40078000,len:13232
+00:38:22.177 > load:0x40080400,len:3028
+00:38:22.177 > entry 0x400805e4
+00:38:23.129 > Start BLE
+00:38:23.859 > Waiting a client connection to notify...
+00:38:23.869 > SampleTextFileA_5kb.txt
+00:38:23.869 > File size: 5
+00:38:29.870 > Start
+00:38:30.110 > [  7316][E][BLECharacteristic.cpp:537] notify(): << esp_ble_gatts_send_ notify: rc=-1 Unknown ESP_ERR error
+00:38:30.110 > [  7318][E][BLECharacteristic.cpp:537] notify(): << esp_ble_gatts_send_ notify: rc=-1 Unknown ESP_ERR error
+00:38:30.126 > [  7326][E][BLECharacteristic.cpp:537] notify(): << esp_ble_gatts_send_ notify: rc=-1 Unknown ESP_ERR error
+00:38:30.211 > Finish
+00:38:31.220 > SampleTextFileB_50kb.txt
+00:38:31.220 > File size: 49
+00:38:31.234 > Start Wifi
+00:38:31.279 > Access Point IP address: 192.168.4.1
+00:40:52.489 > Start BLE
+00:40:52.699 > Waiting a client connection to notify...

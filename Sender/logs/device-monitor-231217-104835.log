@@ -1,0 +1,14 @@
+10:48:35.948 > ets Jul 29 2019 12:21:46
+10:48:35.948 > 
+10:48:35.948 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+10:48:35.953 > configsip: 0, SPIWP:0xee
+10:48:35.956 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:48:35.961 > mode:DIO, clock div:2
+10:48:35.964 > load:0x3fff0030,len:1184
+10:48:35.968 > load:0x40078000,len:13232
+10:48:35.970 > load:0x40080400,len:3028
+10:48:35.970 > entry 0x400805e4
+10:48:36.957 > Start Wifi
+10:48:37.076 > Access Point IP address: 192.168.4.1
+10:48:37.080 > SampleTextFile_50kb.txt
+10:48:37.080 > File size: 5

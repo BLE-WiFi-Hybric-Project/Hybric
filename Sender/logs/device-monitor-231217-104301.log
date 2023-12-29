@@ -1,0 +1,48 @@
+10:43:01.669 > ets Jul 29 2019 12:21:46
+10:43:01.669 > 
+10:43:01.669 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+10:43:01.675 > configsip: 0, SPIWP:0xee
+10:43:01.678 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:43:01.683 > mode:DIO, clock div:2
+10:43:01.686 > load:0x3fff0030,len:1184
+10:43:01.688 > load:0x40078000,len:13232
+10:43:01.691 > load:0x40080400,len:3028
+10:43:01.691 > entry 0x400805e4
+10:43:02.672 > Start BLE
+10:43:03.408 > Waiting a client connection to notify...
+10:43:03.500 > SampleTextFile_50kb.txt
+10:43:03.500 > File size: 999
+10:43:03.512 > Start Wifi
+10:43:03.553 > Access Point IP address: 192.168.4.1
+10:43:53.281 > ets Jul 29 2019 12:21:46
+10:43:53.282 > 
+10:43:53.282 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+10:43:53.287 > configsip: 0, SPIWP:0xee
+10:43:53.289 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:43:53.296 > mode:DIO, clock div:2
+10:43:53.298 > load:0x3fff0030,len:1184
+10:43:53.301 > load:0x40078000,len:13232
+10:43:53.303 > load:0x40080400,len:3028
+10:43:53.303 > entry 0x400805e4
+10:43:54.284 > Start BLE
+10:43:55.027 > Waiting a client connection to notify...
+10:43:55.119 > SampleTextFile_50kb.txt
+10:43:55.119 > File size: 999
+10:43:55.131 > Start Wifi
+10:43:55.170 > Access Point IP address: 192.168.4.1
+10:44:07.781 > ets Jul 29 2019 12:21:46
+10:44:07.782 > 
+10:44:07.782 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+10:44:07.788 > configsip: 0, SPIWP:0xee
+10:44:07.790 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:44:07.796 > mode:DIO, clock div:2
+10:44:07.798 > load:0x3fff0030,len:1184
+10:44:07.801 > load:0x40078000,len:13232
+10:44:07.804 > load:0x40080400,len:3028
+10:44:07.804 > entry 0x400805e4
+10:44:08.785 > Start BLE
+10:44:09.521 > Waiting a client connection to notify...
+10:44:09.613 > SampleTextFile_50kb.txt
+10:44:09.614 > File size: 999
+10:44:09.626 > Start Wifi
+10:44:09.666 > Access Point IP address: 192.168.4.1

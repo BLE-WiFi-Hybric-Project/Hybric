@@ -1,0 +1,58 @@
+10:51:28.431 > ets Jul 29 2019 12:21:46
+10:51:28.431 > 
+10:51:28.431 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+10:51:28.436 > configsip: 0, SPIWP:0xee
+10:51:28.439 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:51:28.444 > mode:DIO, clock div:2
+10:51:28.447 > load:0x3fff0030,len:1184
+10:51:28.449 > load:0x40078000,len:13232
+10:51:28.452 > load:0x40080400,len:3028
+10:51:28.452 > entry 0x400805e4
+10:51:29.438 > Start Wifi
+10:51:29.560 > Access Point IP address: 192.168.4.1
+10:51:29.563 > SampleTextFile_50kb.txt
+10:51:29.563 > File size: 5
+10:51:29.567 > Start BLE
+10:51:30.198 > Waiting a client connection to notify...
+10:53:17.013 > ets Jul 29 2019 12:21:46
+10:53:17.014 > 
+10:53:17.014 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+10:53:17.019 > configsip: 0, SPIWP:0xee
+10:53:17.022 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:53:17.028 > mode:DIO, clock div:2
+10:53:17.030 > load:0x3fff0030,len:1184
+10:53:17.033 > load:0x40078000,len:13232
+10:53:17.037 > load:0x40080400,len:3028
+10:53:17.037 > entry 0x400805e4
+10:53:17.629 > ets Jul 29 2019 12:21:46
+10:53:17.629 > 
+10:53:17.629 > rst:0x3 (SW_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+10:53:17.634 > configsip: 0, SPIWP:0xee
+10:53:17.637 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:53:17.643 > mode:DIO, clock div:2
+10:53:17.646 > load:0x3fff0030,len:1184
+10:53:17.648 > load:0x40078000,len:13232
+10:53:17.648 > load:0x40080400,len:3028
+10:53:17.651 > entry 0x400805e4
+10:53:18.636 > Start Wifi
+10:53:18.755 > Access Point IP address: 192.168.4.1
+10:53:18.759 > SampleTextFile_50kb.txt
+10:53:18.759 > File size: 5
+10:53:18.762 > Start BLE
+10:53:19.386 > Waiting a client connection to notify...
+10:53:40.381 > ets Jul 29 2019 12:21:46
+10:53:40.381 > 
+10:53:40.381 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+10:53:40.387 > configsip: 0, SPIWP:0xee
+10:53:40.389 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+10:53:40.395 > mode:DIO, clock div:2
+10:53:40.398 > load:0x3fff0030,len:1184
+10:53:40.401 > load:0x40078000,len:13232
+10:53:40.404 > load:0x40080400,len:3028
+10:53:40.404 > entry 0x400805e4
+10:53:41.389 > Start Wifi
+10:53:41.509 > Access Point IP address: 192.168.4.1
+10:53:41.513 > SampleTextFile_50kb.txt
+10:53:41.513 > File size: 5
+10:53:41.516 > Start BLE
+10:53:42.152 > Waiting a client connection to notify...
