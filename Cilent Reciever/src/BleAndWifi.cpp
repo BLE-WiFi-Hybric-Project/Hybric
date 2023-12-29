@@ -174,6 +174,7 @@ void BLE_Reciever()
         {
             sendAckNow();
             sendAck = false;
+            delay(1);
         }
 
         // Open file
