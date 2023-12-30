@@ -1,0 +1,32 @@
+{
+  "folders": [
+    {
+      "path": "../ClientV2"
+    },
+    {
+      "name": "ServerV2",
+      "path": "../ServerV2"
+    },
+    {
+      "name": "Wifi-ServerV2",
+      "path": "."
+    },
+    {
+      "name": "Wifi-ClientV2",
+      "path": "../Wifi-ClientV2"
+    },
+    {
+      "name": "hybridServer",
+      "path": "../hybridServer"
+    },
+    {
+      "name": "hybridClient",
+      "path": "../hybridClient"
+    },
+    {
+      "name": "CheckFile",
+      "path": "../CheckFile"
+    }
+  ],
+  "settings": {}
+}

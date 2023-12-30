@@ -46,6 +46,7 @@ void processReceivedData(const char *data, int length)
 {
   // Process the received data (e.g., save to a file)
   receivedFile.write(reinterpret_cast<const uint8_t *>(data), length);
+  Serial.println(receivedFile.size());
 }
 
 class MyCharacteristicCallbacks : public BLECharacteristicCallbacks
@@ -57,9 +58,13 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks
     {
       String info = String(pCharacteristic_2->getValue().c_str());
       if (info == "open")
-        receivedFile = SPIFFS.open("/recieved_example.txt", FILE_WRITE);
+        receivedFile = SPIFFS.open("/example1.txt", FILE_APPEND);
       else if (info == "close")
+      {
+        Serial.println(receivedFile.size());
         receivedFile.close();
+        SPIFFS.remove("/example1.txt");
+      }
       else if (info == "switch")
       {
         receivedFile.close();
@@ -133,6 +138,7 @@ void loop()
 
     if (sendACK)
     {
+      // Serial.println("Send ACK");
       String ACK = "1";
       pCharacteristic->setValue(ACK.c_str());
       pCharacteristic->notify();
@@ -154,5 +160,5 @@ void loop()
     oldDeviceConnected = deviceConnected;
   }
 
-  delay(1000);
+  // delay(1000);
 }

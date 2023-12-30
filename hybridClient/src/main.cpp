@@ -51,7 +51,7 @@ void loop()
     ble_loop();
   else
   {
-    ble_setup();
+    ble_loop();
     wifi_setup();
     while (switchToWiFi)
       wifi_loop();

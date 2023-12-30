@@ -20,7 +20,7 @@ File root;
 boolean switchToWiFi = false;
 
 // Use for sending file
-const int chunkSize = 20;
+const int chunkSize = 500;
 int retransmissionCount = 0;
 const int MAX_RETRANSMISSIONS = 3;
 int lastByteSent;
@@ -59,7 +59,7 @@ bool waitForAck()
       ackReceived = false;
       return true;
     }
-    delay(10); // Adjust the delay as needed
+    delay(1); // Adjust the delay as needed
   }
 
   // Timeout, no acknowledgment received
@@ -88,7 +88,6 @@ void readAndSendFileChunk()
       int bytesRead = file.readBytes(data, chunkSize);
       lastByteSent = bytesRead;
       pRemoteChar->writeValue(data, bytesRead);
-      delay(1);
     }
 
     while (!waitForAck())
@@ -131,6 +130,7 @@ static void notifyCallback(BLERemoteCharacteristic *pBLERemoteCharacteristic,
     for (int i = 1; i < length; i++)
       counter = counter | (pData[i] << i * 8);
 
+    // Serial.println(counter);
     if (counter == 49)
       ackReceived = true;
   }
@@ -237,9 +237,7 @@ void setup()
     return;
   }
 
-  File root = SPIFFS.open("/");
-  file = root.openNextFile();
-
+  root = SPIFFS.open("/");
   Serial.println("Done Setup");
 }
 
@@ -269,7 +267,11 @@ void loop()
     openFileForReading();
 
     if (file)
+    {
+      Serial.println("Start");
       readAndSendFileChunk();
+      Serial.println("Done");
+    }
   }
   else if (doScan)
     BLEDevice::getScan()->start(0);

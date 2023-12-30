@@ -33,7 +33,6 @@ void processReceivedData(const char *data, int length)
 {
     // Process the received data (e.g., save to a file)
     receivedFile.write(reinterpret_cast<const uint8_t *>(data), length);
-    Serial.println(receivedFile.size());
 }
 
 class MyCharacteristicCallbacks : public BLECharacteristicCallbacks
@@ -113,13 +112,14 @@ void ble_loop()
 {
     if (deviceConnected)
     {
-        if(signalSwitch){
-            String Si = "2";
-            pCharacteristic->setValue(Si.c_str());
+        if (signalSwitch)
+        {
+            String signalS = "2";
+            pCharacteristic->setValue(signalS.c_str());
             pCharacteristic->notify();
             signalSwitch = false;
         }
-        
+
         if (sendACK)
         {
             // Serial.println("Send ACK");
@@ -128,7 +128,7 @@ void ble_loop()
             pCharacteristic->notify();
             sendACK = false;
         }
-        
+
         if (switchToWiFi)
             return;
     }

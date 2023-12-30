@@ -3,61 +3,57 @@
 const char *ssid = "ESP32";
 const char *password = "88888888";
 
-WiFiServer server(80);
-
-const int bufferSize = 256; // Adjust the buffer size as needed
+AsyncWebServer server(80);
+bool ACK = false;
 
 void wifi_setup()
 {
-    // Connect to SoftAP
     WiFi.softAP(ssid, password);
 
-    // Print the IP address
-    Serial.println("Access Point IP address: " + WiFi.softAPIP().toString());
+    Serial.println(WiFi.softAPIP());
 
-    // Start the server
+    server.on("/ack", HTTP_GET, [](AsyncWebServerRequest *request)
+              {
+    // Handle the GET request
+    ACK = true;
+    request->send(200, "text/plain", "200"); });
+
+    server.on(
+        "/post", HTTP_POST,
+        [](AsyncWebServerRequest *request) {},
+        NULL,
+        [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        {
+            // Handle incoming data (POST request payload)
+            Serial.println("incoming data");
+
+            // Create or open a file for writing
+            File file = SPIFFS.open("/data.txt", "a"); // "a" means append, change to "w" for write (overwriting)
+
+            if (!file)
+                Serial.println("Failed to open file for writing");
+            else
+            {
+                // Write data to the file
+                file.write(data, len);
+                file.close();
+                Serial.println("Data written to file successfully");
+            }
+
+            // Send a response (HTTP status 200)
+            request->send(200);
+        });
+
     server.begin();
-
-    Serial.println("Server started");
 }
 
 void wifi_loop()
 {
-
-    WiFiClient client = server.available();
-
-    if (client)
+    // Empty loop as the server handles requests asynchronously
+    if (ACK)
     {
-        Serial.println("Client connected");
-        Serial.println(client.readStringUntil('\r').c_str());
-        // Create a buffer to store chunks of data
-        char buffer[bufferSize];
-        receivedFile = SPIFFS.open("/example1.txt", FILE_APPEND);
-
-        while (client.connected())
-        {
-            size_t bytesRead = client.readBytes(buffer, bufferSize);
-
-            if (bytesRead > 0)
-            {
-                receivedFile.write(reinterpret_cast<const uint8_t *>(buffer), bytesRead);
-                // Print received data to Serial Monitor
-                // Serial.write(buffer, bytesRead);
-                client.print("ACK");
-                Serial.println("Send ACK");
-                delay(1);
-            }
-        }
-
-        receivedFile.close();
-        SPIFFS.remove("/example1.txt");
-        Serial.println("File received and saved.");
+        Serial.println("ACK gotten");
         switchToWiFi = false;
-        
-        // Close the connection
-        client.stop();
-        Serial.println("Client disconnected");
+        ACK = false;
     }
-
-    delay(1000);
 }

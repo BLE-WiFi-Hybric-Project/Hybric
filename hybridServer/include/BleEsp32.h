@@ -18,13 +18,14 @@ extern BLE2902 *pBLE2902_2;
 extern bool deviceConnected;
 extern bool oldDeviceConnected;
 
+// Global variables for ACK
+extern bool signalSwitch;
+extern bool sendACK;
+
 // Define UUIDs:
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define CHARACTERISTIC_UUID_2 "1c95d5e3-d8f7-413a-bf3d-7a2e5d7be87e"
-
-extern bool sendACK;
-extern bool signalSwitch;
 
 void processReceivedData(const char *data, int length);
 void ble_setup();

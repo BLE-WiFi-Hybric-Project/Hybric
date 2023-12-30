@@ -25,12 +25,8 @@ static BLEAdvertisedDevice *myDevice;
 extern BLERemoteCharacteristic *pRemoteChar;
 extern BLERemoteCharacteristic *pRemoteChar_2;
 
-// Global variables for ACK
-extern bool sendACK;
-
 void informServer(String txValue);
 bool waitForAck();
-void openFileForReading();
 void readAndSendFileChunk();
 bool connectCharacteristic(BLERemoteService *pRemoteService, BLERemoteCharacteristic *BLERemoteChar);
 bool connectToServer();

@@ -3,96 +3,67 @@
 const char *ssid = "ESP32";
 const char *password = "88888888";
 const char *serverIP = "192.168.4.1"; // SoftAP IP address
-const int serverPort = 80;
-
-const int bufferSize = 256; // Adjust the buffer size as needed
-bool waitingForAck = false;
-size_t lastAckData;
-
-bool ACK(WiFiClient &client)
-{
-    unsigned long startTime = millis();
-    while (millis() - startTime < 5000)
-    {
-        String ack = client.readStringUntil('\r');
-        if (ack == "ACK")
-            return true;
-
-        delay(10); // Adjust the delay as needed
-    }
-    // Timeout, no acknowledgment received
-    return false;
-}
 
 void wifi_setup()
 {
-    // Connect to SoftAP
+    Serial.begin(115200);
+
     WiFi.begin(ssid, password);
+
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(100);
         Serial.println("Connecting to WiFi...");
     }
-    digitalWrite(0, HIGH);
 
     Serial.println("Connected to WiFi");
-
-    root = SPIFFS.open("/");
-    fileSend = root.openNextFile();
 }
 
 void wifi_loop()
 {
-    // Connect to the server
-    WiFiClient client;
-    if (client.connect(serverIP, serverPort))
+    // Open the file
+    if (fileSend)
     {
-        Serial.println("Connected to server");
-        digitalWrite(1, HIGH);
+        // Get the file size
+        size_t fileSize = fileSend.size();
 
-        // Create a buffer to store chunks of data
-        char buffer[bufferSize];
+        // Read the contents of the file into a buffer
+        uint8_t *fileBuffer = (uint8_t *)malloc(fileSize);
+        fileSend.read(fileBuffer, fileSize);
 
-        // Read data from file and send it to the server in chunks
-        while (fileSend.available())
+        // Create an HTTP client object
+        HTTPClient http;
+
+        // Construct the server URL
+        String url = "http://" + String(serverIP) + "/post";
+
+        // Start the HTTP POST request
+        http.begin(url);
+
+        // Set the content type to multipart form data
+        http.addHeader("Content-Type", "text/plain");
+
+        // Provide the file data in the body of the request
+        Serial.println("Start upload");
+        int httpResponseCode = http.POST(fileBuffer, fileSize);
+
+        // Check for a successful upload
+        if (httpResponseCode == 200)
         {
-            size_t bytesRead = fileSend.readBytes(buffer, bufferSize);
-            lastAckData = bytesRead;
-            client.write(buffer, bytesRead);
-
-            while (!ACK(client))
-            {
-                retransmissionCount++;
-                if (retransmissionCount <= MAX_RETRANSMISSIONS)
-                {
-                    // Retransmit the same chunk
-                    Serial.println("Retransmitting chunk...");
-                    client.write(buffer, lastAckData);
-                }
-                else
-                {
-                    Serial.println("Max retransmissions reached. Aborting.");
-                    break;
-                }
-            }
-            retransmissionCount = 0;
+            Serial.println("File uploaded successfully");
+        }
+        else
+        {
+            Serial.print("Error uploading file. HTTP response code: ");
+            Serial.println(httpResponseCode);
         }
 
         // Close the file
         fileSend.close();
-        Serial.println("File sent");
-        digitalWrite(1, HIGH);
-        switchToWiFi = false;
 
-        // Close the connection
-        client.stop();
-        Serial.println("Disconnected from server");
+        // End the HTTP connection
+        http.end();
     }
-    else
-    {
-        Serial.println("Connection to server failed");
-    }
-
-    // Delay before trying again
+    // Wait for some time before the next upload
     delay(1000);
 }

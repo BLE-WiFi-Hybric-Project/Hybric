@@ -1,60 +1,69 @@
 #include <Arduino.h>
+#include <SPIFFS.h>
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
-#include <SPIFFS.h>
 
 const char *ssid = "ESP32";
 const char *password = "88888888";
 
-bool ACK = false;
-
 AsyncWebServer server(80);
-
-void handleUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final)
-{
-  if (!index)
-    request->_tempFile = SPIFFS.open("/" + filename, "w");
-
-  if (len)
-  {
-    // stream the incoming chunk to the opened file
-    request->_tempFile.write(data, len);
-  }
-  if (final)
-  {
-    // close the file handle as the upload is now done
-    request->_tempFile.close();
-    request->send(200, "text/plain", "File Uploaded Successfully");
-  }
-}
+bool ACK = false;
 
 void setup()
 {
   Serial.begin(115200);
 
-  // Start access point
   WiFi.softAP(ssid, password);
 
-  // Print the IP address
-  Serial.println("Access Point IP address: " + WiFi.softAPIP().toString());
+  Serial.println(WiFi.softAPIP());
 
   // Initialize SPIFFS
   if (!SPIFFS.begin())
   {
-    Serial.println("Failed to mount SPIFFS");
+    Serial.println("Failed to mount file system");
     return;
   }
+  server.on("/ack", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+    // Handle the GET request
+    ACK = true;
+    request->send(200, "text/plain", "200"); });
 
   server.on(
-      "/upload", HTTP_POST, [](AsyncWebServerRequest *request)
-      { request->send(200); },
-      handleUpload);
+      "/post", HTTP_POST,
+      [](AsyncWebServerRequest *request) {},
+      NULL,
+      [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+      {
+        // Handle incoming data (POST request payload)
+        Serial.println("incoming data");
 
-  // Serve other static files (like HTML, CSS, etc.)
-  server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
+        // Create or open a file for writing
+        File file = SPIFFS.open("/data.txt", "a"); // "a" means append, change to "w" for write (overwriting)
 
-  // Start server
+        if (!file)
+          Serial.println("Failed to open file for writing");
+        else
+        {
+          // Write data to the file
+          file.write(data, len);
+          file.close();
+          Serial.println("Data written to file successfully");
+        }
+
+        // Send a response (HTTP status 200)
+        request->send(200);
+      });
+
   server.begin();
 }
 
-void loop() {}
+void loop()
+{
+  // Empty loop as the server handles requests asynchronously
+  if (ACK)
+  {
+    Serial.println("ACK gotten");
+    ACK = false;
+  }
+}

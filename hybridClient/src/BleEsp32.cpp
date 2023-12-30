@@ -45,16 +45,6 @@ bool waitForAck()
     return false;
 }
 
-// Function to open the file for reading
-void openFileForReading()
-{
-    fileSend = root.openNextFile();
-    if (!fileSend)
-        Serial.println("Failed to open file for reading");
-    else
-        Serial.println("File opened for reading");
-}
-
 void readAndSendFileChunk()
 {
     while (fileSend.available())
@@ -236,17 +226,14 @@ void ble_loop()
     if (connected)
     {
         // Do something when connected
-        if (switchToWiFi)
+        if (signalSwitch)
         {
             informServer("switch");
-            while(!signalSwitch) {
-                delay(10)
-            }
+            while (signalSwitch)
+                delay(1);
             signalSwitch = false;
             return;
         }
-
-        openFileForReading();
 
         if (fileSend)
         {

@@ -28,10 +28,7 @@ void loop()
   {
     wifi_setup();
     while (switchToWiFi)
-    {
-      // delay(5000);
       wifi_loop();
-    }
     ble_setup();
   }
 }

@@ -1,64 +1,85 @@
 #include <Arduino.h>
+#include <SPIFFS.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include <SPIFFS.h>
+
+const char *ssid = "ESP32";
+const char *password = "88888888";
+const char *serverAddress = "192.168.4.1"; // Change this to the IP address of your ESP32 server
 
 File root;
 File file;
-const char *ssid = "ESP32";
-const char *password = "88888888";
-const char *serverIP = "192.168.4.1";
-bool switchToWiFi = false;
 
 void setup()
 {
   Serial.begin(115200);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+
+  Serial.println("Connected to WiFi");
 
   if (!SPIFFS.begin(true))
   {
     Serial.println("Failed to mount SPIFFS");
     return;
   }
-  // Connect to Wi-Fi
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print("...");
-  }
-  Serial.println("\nConnected to WiFi");
 
   root = SPIFFS.open("/");
 }
 
 void loop()
 {
+
+  // Open the file
   file = root.openNextFile();
-  // Initialize the HTTP client
-  HTTPClient http;
-  String url = "http://" + String(serverIP) + "/upload";
-
-  // Begin the HTTP request
-  http.begin(url);
-  http.addHeader("Content-Type", "multipart/form-data");
-  http.addHeader("Content-Disposition", "attachment; filename=" + String(file.name()));
-
-  // Send the file content
-  int httpCode = http.sendRequest("POST", &file);
-
-  // Check for a successful upload
-  if (httpCode == 200)
+  if (file)
   {
-    Serial.println("File uploaded successfully");
-    String response = http.getString();
-    Serial.println("Server Response: " + response);
+    // Get the file size
+    size_t fileSize = file.size();
+
+    // Read the contents of the file into a buffer
+    uint8_t *fileBuffer = (uint8_t *)malloc(fileSize);
+    file.read(fileBuffer, fileSize);
+
+    // Create an HTTP client object
+    HTTPClient http;
+
+    // Construct the server URL
+    String url = "http://" + String(serverAddress) + "/post";
+
+    // Start the HTTP POST request
+    http.begin(url);
+
+    // Set the content type to multipart form data
+    http.addHeader("Content-Type", "text/plain");
+
+    // Provide the file data in the body of the request
+    Serial.println("Start upload");
+    int httpResponseCode = http.POST(fileBuffer, fileSize);
+
+    // Check for a successful upload
+    if (httpResponseCode == 200)
+    {
+      Serial.println("File uploaded successfully");
+    }
+    else
+    {
+      Serial.print("Error uploading file. HTTP response code: ");
+      Serial.println(httpResponseCode);
+    }
+
+    // Close the file
+    file.close();
+
+    // End the HTTP connection
+    http.end();
   }
-  else
-    Serial.println("Failed to upload file");
-
-  // End the HTTP request and Close the file
-  http.end();
-  file.close();
-
-  delay(5000); // Wait for a while before reattempting
+  // Wait for some time before the next upload
+  delay(5000);
 }
