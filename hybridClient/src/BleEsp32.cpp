@@ -4,6 +4,7 @@
 const int chunkSize = 500;
 int lastByteSent;
 bool ackReceived = false;
+bool signalSwitch = false;
 
 // Define pointer for the BLE connection
 BLERemoteCharacteristic *pRemoteChar;
@@ -111,6 +112,9 @@ static void notifyCallback(BLERemoteCharacteristic *pBLERemoteCharacteristic,
         // Serial.println(counter);
         if (counter == 49)
             ackReceived = true;
+
+        if (counter == 50)
+            signalSwitch = true;
     }
 }
 
@@ -235,6 +239,10 @@ void ble_loop()
         if (switchToWiFi)
         {
             informServer("switch");
+            while(!signalSwitch) {
+                delay(10)
+            }
+            signalSwitch = false;
             return;
         }
 
