@@ -52,7 +52,8 @@ void wifi_loop()
         receivedFile.close();
         SPIFFS.remove("/example1.txt");
         Serial.println("File received and saved.");
-
+        switchToWiFi = false;
+        
         // Close the connection
         client.stop();
         Serial.println("Client disconnected");
