@@ -18,6 +18,7 @@ static boolean doScan = false;
 extern const int chunkSize;
 extern int lastByteSent;
 extern bool ackReceived;
+extern bool signalSwitch;
 
 // Define pointer for the BLE connection
 static BLEAdvertisedDevice *myDevice;
