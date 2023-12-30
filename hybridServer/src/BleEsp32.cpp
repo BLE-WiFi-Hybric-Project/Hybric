@@ -13,6 +13,7 @@ bool oldDeviceConnected = false;
 
 // Global variables for ACK
 bool sendACK = false;
+bool signalSwitch = false;
 
 class MyServerCallbacks : public BLEServerCallbacks
 {
@@ -55,6 +56,7 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks
             {
                 receivedFile.close();
                 switchToWiFi = true;
+                signalSwitch = true;
             }
         }
         else if (uuid == CHARACTERISTIC_UUID)
@@ -111,9 +113,13 @@ void ble_loop()
 {
     if (deviceConnected)
     {
-        if (switchToWiFi)
-            return;
-
+        if(signalSwitch){
+            String Si = "2";
+            pCharacteristic->setValue(Si.c_str());
+            pCharacteristic->notify();
+            signalSwitch = false;
+        }
+        
         if (sendACK)
         {
             // Serial.println("Send ACK");
@@ -122,6 +128,9 @@ void ble_loop()
             pCharacteristic->notify();
             sendACK = false;
         }
+        
+        if (switchToWiFi)
+            return;
     }
 
     if (!deviceConnected && oldDeviceConnected)
