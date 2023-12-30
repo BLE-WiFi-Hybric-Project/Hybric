@@ -82,6 +82,7 @@ void wifi_loop()
         fileSend.close();
         Serial.println("File sent");
         digitalWrite(1, HIGH);
+        switchToWiFi = false;
 
         // Close the connection
         client.stop();
