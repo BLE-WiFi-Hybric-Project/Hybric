@@ -233,7 +233,10 @@ void ble_loop()
     {
         // Do something when connected
         if (switchToWiFi)
+        {
+            informServer("switch");
             return;
+        }
 
         openFileForReading();
 
