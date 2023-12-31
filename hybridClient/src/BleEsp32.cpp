@@ -99,7 +99,7 @@ static void notifyCallback(BLERemoteCharacteristic *pBLERemoteCharacteristic,
         for (int i = 1; i < length; i++)
             counter = counter | (pData[i] << i * 8);
 
-        // Serial.println(counter);
+        Serial.println(counter);
         if (counter == 49)
             ackReceived = true;
 
@@ -211,7 +211,7 @@ void ble_loop()
     {
         if (connectToServer())
         {
-            digitalWrite(0, HIGH);
+            // digitalWrite(0, HIGH);
             Serial.println("Connected to the BLE Server.");
             connected = true;
         }
@@ -226,20 +226,22 @@ void ble_loop()
     if (connected)
     {
         // Do something when connected
-        if (signalSwitch)
+        if (switchToWiFi)
         {
+            Serial.println("Switch");
             informServer("switch");
-            while (signalSwitch)
-                delay(1);
+            while (!signalSwitch)
+                delay(10);
             signalSwitch = false;
-            return;
+            switchToWiFi = false;
+            Serial.println("Switch Success");
         }
 
-        if (fileSend)
+        if (fileSend && !switchToWiFi)
         {
-            digitalWrite(1, HIGH);
+            // digitalWrite(1, HIGH);
             readAndSendFileChunk();
-            digitalWrite(1, HIGH);
+            // digitalWrite(1, HIGH);
         }
     }
     else if (doScan)

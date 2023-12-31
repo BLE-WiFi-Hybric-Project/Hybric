@@ -20,7 +20,7 @@ File root;
 boolean switchToWiFi = false;
 
 // Use for sending file
-const int chunkSize = 200;
+const int chunkSize = 500;
 int retransmissionCount = 0;
 const int MAX_RETRANSMISSIONS = 3;
 int lastByteSent;

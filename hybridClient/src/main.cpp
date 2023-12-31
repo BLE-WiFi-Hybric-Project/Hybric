@@ -27,8 +27,8 @@ void setup()
   Serial.begin(115200);
 
   // pin Mode:
-  pinMode(0, OUTPUT);
-  pinMode(1, OUTPUT);
+  // pinMode(0, OUTPUT);
+  // pinMode(1, OUTPUT);
 
   // put your setup code here, to run once:
   if (!SPIFFS.begin(true))
@@ -51,7 +51,11 @@ void loop()
     ble_loop();
   else
   {
-    ble_loop();
+    // Inform Server to switch
+    while (switchToWiFi)
+      ble_loop();
+
+    switchToWiFi = true;
     wifi_setup();
     while (switchToWiFi)
       wifi_loop();

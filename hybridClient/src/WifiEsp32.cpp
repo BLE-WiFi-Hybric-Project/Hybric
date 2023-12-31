@@ -4,7 +4,7 @@
 const char *ssid = "ESP32";
 const char *password = "88888888";
 const char *serverIP = "192.168.4.1"; // SoftAP IP address
-const size_t chunkSize = 20 * 1024;   // 1KB
+const size_t chunkSizeW = 20 * 1024;  // 1KB
 
 WiFiClient *wifi = new WiFiClientFixed();
 
@@ -45,10 +45,10 @@ void wifi_loop()
 
         // Provide the file data in the body of the request
         Serial.println("Start upload");
-        for (size_t pos = 0; pos < fileSize; pos += chunkSize)
+        for (size_t pos = 0; pos < fileSize; pos += chunkSizeW)
         {
             // Calculate the remaining bytes to read in this chunk
-            size_t bytesToRead = min(chunkSize, fileSize - pos);
+            size_t bytesToRead = min(chunkSizeW, fileSize - pos);
 
             // Read the contents of the file into a buffer
             uint8_t *fileBuffer = (uint8_t *)malloc(bytesToRead);
@@ -100,6 +100,7 @@ void wifi_loop()
         // End the HTTP connection
         delay(100);
         http.end();
+        switchToWiFi = false;
     }
     // Wait for some time before the next upload
     delay(1000);

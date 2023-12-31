@@ -8,7 +8,7 @@
 extern const char *ssid;
 extern const char *password;
 extern const char *serverIP; // SoftAP IP address
-extern const size_t chunkSize;
+extern const size_t chunkSizeW;
 extern WiFiClient *wifi;
 
 void wifi_setup();

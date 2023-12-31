@@ -54,7 +54,6 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks
             else if (info == "switch")
             {
                 receivedFile.close();
-                switchToWiFi = true;
                 signalSwitch = true;
             }
         }
@@ -117,6 +116,7 @@ void ble_loop()
             String signalS = "2";
             pCharacteristic->setValue(signalS.c_str());
             pCharacteristic->notify();
+            switchToWiFi = true;
             signalSwitch = false;
         }
 
