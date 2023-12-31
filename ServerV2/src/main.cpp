@@ -46,7 +46,7 @@ void processReceivedData(const char *data, int length)
 {
   // Process the received data (e.g., save to a file)
   receivedFile.write(reinterpret_cast<const uint8_t *>(data), length);
-  Serial.println(receivedFile.size());
+  // Serial.println(receivedFile.size());
 }
 
 class MyCharacteristicCallbacks : public BLECharacteristicCallbacks

@@ -1,7 +1,7 @@
 #include "BleEsp32.h"
 
 // Use for sending file
-const int chunkSize = 500;
+const int chunkSize = 200;
 int lastByteSent;
 bool ackReceived = false;
 bool signalSwitch = false;

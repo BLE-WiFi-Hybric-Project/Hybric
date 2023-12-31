@@ -23,10 +23,13 @@ void setup()
     Serial.println("Failed to mount file system");
     return;
   }
+  
   server.on("/ack", HTTP_GET, [](AsyncWebServerRequest *request)
             {
     // Handle the GET request
     ACK = true;
+    SPIFFS.remove("/data.txt");
+    Serial.println("Success");
     request->send(200, "text/plain", "200"); });
 
   server.on(
@@ -48,7 +51,7 @@ void setup()
           // Write data to the file
           file.write(data, len);
           file.close();
-          Serial.println("Data written to file successfully");
+          // Serial.println("Data written to file successfully");
         }
 
         // Send a response (HTTP status 200)

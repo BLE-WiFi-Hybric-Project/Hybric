@@ -20,7 +20,7 @@ File root;
 boolean switchToWiFi = false;
 
 // Use for sending file
-const int chunkSize = 500;
+const int chunkSize = 200;
 int retransmissionCount = 0;
 const int MAX_RETRANSMISSIONS = 3;
 int lastByteSent;
@@ -73,7 +73,7 @@ void openFileForReading()
   if (!file)
     Serial.println("Failed to open file for reading");
   else
-    Serial.println("File opened for reading");
+    Serial.println(file.name());
 }
 
 void readAndSendFileChunk()
