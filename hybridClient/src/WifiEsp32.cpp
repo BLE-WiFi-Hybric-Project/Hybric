@@ -60,7 +60,7 @@ void wifi_loop()
 
             // Check for a successful upload
             if (httpResponseCode == 200)
-                Serial.println("OK");
+                Serial.println("Uploading chunk Success");
             else
             {
                 while (httpResponseCode != 200)

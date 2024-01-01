@@ -1,7 +1,7 @@
 #include "BleEsp32.h"
 
 // Use for sending file
-const int chunkSize = 200;
+const int chunkSize = 500;
 int lastByteSent;
 bool ackReceived = false;
 bool signalSwitch = false;
@@ -47,17 +47,15 @@ bool waitForAck()
 
 void readAndSendFileChunk()
 {
+    Serial.println("Start upload BLE");
+    char data[chunkSize];
+    informServer("open");
+
     while (fileSend.available())
     {
-        char data[chunkSize];
-        informServer("open");
-
-        if (!ackReceived)
-        {
-            int bytesRead = fileSend.readBytes(data, chunkSize);
-            lastByteSent = bytesRead;
-            pRemoteChar->writeValue(data, bytesRead);
-        }
+        int bytesRead = fileSend.readBytes(data, chunkSize);
+        lastByteSent = bytesRead;
+        pRemoteChar->writeValue(data, bytesRead);
 
         while (!waitForAck())
         {
@@ -85,6 +83,7 @@ void readAndSendFileChunk()
     informServer("close");
     fileSend.close();
     Serial.println("File reading complete");
+    fileBleSend = false;
 }
 
 // Callback function for Notify function
@@ -99,9 +98,11 @@ static void notifyCallback(BLERemoteCharacteristic *pBLERemoteCharacteristic,
         for (int i = 1; i < length; i++)
             counter = counter | (pData[i] << i * 8);
 
-        Serial.println(counter);
         if (counter == 49)
+        {
+            Serial.println("Ack recieved");
             ackReceived = true;
+        }
 
         if (counter == 50)
             signalSwitch = true;
@@ -235,17 +236,18 @@ void ble_loop()
             signalSwitch = false;
             switchToWiFi = false;
             Serial.println("Switch Success");
+            return;
         }
 
-        if (fileSend && !switchToWiFi)
+        if (fileSend)
         {
             // digitalWrite(1, HIGH);
             readAndSendFileChunk();
-            // digitalWrite(1, HIGH);
+            // digitalWrite(1, HIGH);}
         }
-    }
-    else if (doScan)
-        BLEDevice::getScan()->start(0);
+        else if (doScan)
+            BLEDevice::getScan()->start(0);
 
-    delay(1000);
+        delay(1000);
+    }
 }

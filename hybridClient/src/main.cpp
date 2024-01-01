@@ -4,7 +4,10 @@
 
 File fileSend;
 File root;
+
 bool switchToWiFi = false;
+bool fileBleSend = false;
+
 int retransmissionCount = 0;
 const int MAX_RETRANSMISSIONS = 3;
 
@@ -19,7 +22,10 @@ void shouldSwitchToWifi(File fileSending)
   if (size > 30 * 1024)
     switchToWiFi = true;
   else
+  {
+    fileBleSend = true;
     switchToWiFi = false;
+  }
 }
 
 void setup()
@@ -48,7 +54,10 @@ void loop()
     shouldSwitchToWifi(fileSend);
 
   if (!switchToWiFi)
-    ble_loop();
+  {
+    while (fileBleSend || !fileSend)
+      ble_loop();
+  }
   else
   {
     // Inform Server to switch
@@ -61,4 +70,6 @@ void loop()
       wifi_loop();
     ble_setup();
   }
+
+  delay(1000);
 }
