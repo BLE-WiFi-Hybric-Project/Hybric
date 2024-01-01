@@ -55,7 +55,7 @@ void loop()
 
   if (!switchToWiFi)
   {
-    while (fileBleSend || !fileSend)
+    while (fileBleSend)
       ble_loop();
   }
   else
@@ -64,11 +64,15 @@ void loop()
     while (switchToWiFi)
       ble_loop();
 
+    // Start Wi-Fi
     switchToWiFi = true;
     wifi_setup();
     while (switchToWiFi)
       wifi_loop();
+
+    // Start BLE agian
     ble_setup();
+    ble_loop();
   }
 
   delay(1000);
