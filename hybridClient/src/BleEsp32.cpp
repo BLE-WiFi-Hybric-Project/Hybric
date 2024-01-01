@@ -239,7 +239,7 @@ void ble_loop()
             return;
         }
 
-        if (fileSend)
+        if (fileBleSend)
         {
             // digitalWrite(1, HIGH);
             readAndSendFileChunk();
