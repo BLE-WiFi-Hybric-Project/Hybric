@@ -101,6 +101,7 @@ void wifi_loop()
         delay(100);
         http.end();
         switchToWiFi = false;
+        fileOpenForUpload = true;
     }
     // Wait for some time before the next upload
     delay(1000);
