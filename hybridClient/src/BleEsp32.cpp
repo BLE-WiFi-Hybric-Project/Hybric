@@ -83,7 +83,7 @@ void readAndSendFileChunk()
     informServer("close");
     fileSend.close();
     Serial.println("File reading complete");
-    fileBleSend = false;
+    fileOpenForUpload = true;
 }
 
 // Callback function for Notify function
@@ -243,7 +243,6 @@ void ble_loop()
         {
             // digitalWrite(1, HIGH);
             readAndSendFileChunk();
-            fileOpenForUpload = true;
             // digitalWrite(1, HIGH);}
         }
         else if (doScan)
