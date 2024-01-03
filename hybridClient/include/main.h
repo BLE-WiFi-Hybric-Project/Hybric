@@ -7,7 +7,7 @@
 extern File fileSend;
 extern File root;
 extern bool switchToWiFi;
-extern bool fileBleSend;
+extern bool fileOpenForUpload;
 extern int retransmissionCount;
 extern const int MAX_RETRANSMISSIONS;
 
