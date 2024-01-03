@@ -243,6 +243,7 @@ void ble_loop()
         {
             // digitalWrite(1, HIGH);
             readAndSendFileChunk();
+            fileOpenForUpload = true;
             // digitalWrite(1, HIGH);}
         }
         else if (doScan)
