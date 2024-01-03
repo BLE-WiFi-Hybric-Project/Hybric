@@ -6,13 +6,16 @@ File fileSend;
 File root;
 
 bool switchToWiFi = false;
-bool fileBleSend = false;
+bool fileOpenForUpload = true;
 
 int retransmissionCount = 0;
 const int MAX_RETRANSMISSIONS = 3;
 
 void shouldSwitchToWifi(File fileSending)
 {
+  if(!fileSending)
+    return;
+  
   if (switchToWiFi)
     return;
 
@@ -22,10 +25,8 @@ void shouldSwitchToWifi(File fileSending)
   if (size > 30 * 1024)
     switchToWiFi = true;
   else
-  {
-    fileBleSend = true;
     switchToWiFi = false;
-  }
+  fileOpenForUpload = false;
 }
 
 void setup()
@@ -49,16 +50,12 @@ void setup()
 
 void loop()
 {
-  fileSend = root.openNextFile();
-  if (fileSend)
+  if(fileOpenForUpload){
+    fileSend = root.openNextFile();
     shouldSwitchToWifi(fileSend);
-
-  if (!switchToWiFi)
-  {
-    while (fileBleSend)
-      ble_loop();
   }
-  else
+  ble_loop();
+  if (switchToWiFi)
   {
     // Inform Server to switch
     while (switchToWiFi)
@@ -72,7 +69,6 @@ void loop()
 
     // Start BLE agian
     ble_setup();
-    ble_loop();
   }
 
   delay(1000);
