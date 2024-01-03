@@ -22,13 +22,12 @@ void setup()
 
 void loop()
 {
-  if (!switchToWiFi)
-    ble_loop();
-  else
+  if (switchToWiFi)
   {
     wifi_setup();
     while (switchToWiFi)
       wifi_loop();
     ble_setup();
   }
+  ble_loop();
 }
