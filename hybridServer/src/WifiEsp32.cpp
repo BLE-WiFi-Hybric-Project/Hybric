@@ -15,7 +15,6 @@ void wifi_setup()
     server.on("/ack", HTTP_GET, [](AsyncWebServerRequest *request)
               {
     // Handle the GET request
-    file.close();
     ACK = true;
     request->send(200, "text/plain", "200"); });
 
