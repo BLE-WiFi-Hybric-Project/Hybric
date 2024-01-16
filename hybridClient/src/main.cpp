@@ -26,6 +26,7 @@ void shouldSwitchToWifi(File fileSending)
     switchToWiFi = true;
   else
     switchToWiFi = false;
+  fileBleSend = true;
   fileOpenForUpload = false;
 }
 
