@@ -7,6 +7,7 @@ File root;
 
 bool switchToWiFi = false;
 bool fileOpenForUpload = true;
+bool fileBleSend = false;
 
 int retransmissionCount = 0;
 const int MAX_RETRANSMISSIONS = 3;
